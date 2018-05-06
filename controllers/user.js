@@ -3,14 +3,42 @@
  * @Author: 冯光平 
  * @Date: 2018-04-16 10:20:39
  * @Last Modified by: 冯光平
- * @Last Modified time: 2018-05-04 17:14:57
+ * @Last Modified time: 2018-05-06 10:18:57
  */
 const UserModel = require('../models/user');
-const db = require('../db');
+const sequelize = require('../db');
 
 module.exports = {
   /**
-   * 获取单个用户
+   * @description 增加一个新的用户
+   */
+  createUser: (req, res, next) => {
+    var name = req.query.username,
+        avatar = req.query.avatar,
+        association = req.query.association;
+        console.log('createUserGp');
+    UserModel
+      .create({
+        username: name,
+        avatar: avatar,
+        association: association
+      }).then(user => {
+        res.locals.returns = {
+          code: '0000',
+          data: {
+            username: user.username,
+            avatar: user.avatar,
+            association: user.association
+          },
+          message: '新增成功'
+        }
+        next()
+      }).catch(err => {
+        next(err)
+      })
+  },
+  /**
+   * 获取单个用户，查询该用户加入了那个车协
    *
    * @param {Object} req
    * @param {Object} res
@@ -88,5 +116,29 @@ module.exports = {
     .catch(err => {
       next(err);
     });
+  },
+  /**
+   * @description 删除一个用户
+   */
+  deleteUser: (req, res, next) => {
+    var userId = req.query.id;
+    sequelize.transaction(t => {
+      UserModel
+        .destroy({ 
+          where: {
+            id: userId
+          }
+        }, {
+          transaction: t
+        }).then()
+    })
+    .then(() => {
+      res.locals.returns = {
+        code: '0000',
+        data: null,
+        message: '删除成功'
+      }
+      next()
+    })
   }
 };

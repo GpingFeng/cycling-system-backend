@@ -7,6 +7,9 @@ var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var activityRouter = require('./routes/activity');
+var userActivityRouter = require('./routes/user_activity');
+var associationRouter = require('./routes/association');
+var postRouter = require('./routes/post');
 
 const apiResPonseMiddleware = require('./middleware/api-response');
 
@@ -27,6 +30,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/activity', activityRouter);
+app.use('/useractivity', userActivityRouter);
+app.use('/association', associationRouter);
+app.use('/post', postRouter);
 
 app.use(apiResPonseMiddleware);
 

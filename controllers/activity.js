@@ -3,15 +3,17 @@
  * @Author: 冯光平 
  * @Date: 2018-05-04 15:19:22 
  * @Last Modified by: 冯光平
- * @Last Modified time: 2018-05-04 17:30:09
+ * @Last Modified time: 2018-05-04 21:21:03
  */
 const Sequelize = require('sequelize');
 const sequelize = require('../db');
-
 const activityModelFunction = require('../models/activity');
 const activityModel = activityModelFunction(sequelize, Sequelize);
 
 module.exports = {
+  /**
+   * @description 增加一个活动
+   */
   createActivity: (req, res, next) => {
     var name = req.query.name,
         contentText = req.query.contentText,
@@ -34,7 +36,7 @@ module.exports = {
           },
           message: '新增成功'
         }
-        next()
+        next();
       })
       .catch(err => {
         next(err);
@@ -83,5 +85,30 @@ module.exports = {
       .catch(err => {
         next(err);
       });
+  },
+  /**
+   * @description 删除一个活动
+   */
+  deleteActivity: (req, res, next) => {
+    var acticityId = req.query.id;
+    sequelize.transaction(t => {
+      activityModel
+        .destroy({
+          where: {
+            id: acticityId
+          }
+        }, {
+          transaction: t
+        }).then()
+    }).then(() => {
+      res.locals.returns = {
+        code: '0000',
+        data: 'null',
+        message: '成功删除活动'
+      }
+      next()
+    }).catch(err => {
+      next(err)
+    })
   }
 }

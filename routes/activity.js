@@ -3,7 +3,7 @@
  * @Author: 冯光平 
  * @Date: 2018-05-04 15:27:22 
  * @Last Modified by: 冯光平
- * @Last Modified time: 2018-05-04 17:26:07
+ * @Last Modified time: 2018-05-04 20:43:47
  */
 const express = require('express');
 const router = express.Router();
@@ -16,5 +16,6 @@ router.get('/', function(req, res, next) {
 router.get(API.GET_ACTIVITY_BY_ID, activityModel.getActivity);
 router.get(API.GET_ALL_ACTIVITIES, activityModel.getAllActivity);
 router.get(API.CREATE_ACTIVITY, activityModel.createActivity);
+router.get(API.DELETE_ACTIVITY, activityModel.deleteActivity);
 
 module.exports = router;
