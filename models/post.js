@@ -1,12 +1,19 @@
-/*
- * @description: 帖子表映射 
- * @Author: 冯光平 
- * @Date: 2018-05-05 23:25:14 
- * @Last Modified by: 冯光平
- * @Last Modified time: 2018-05-06 09:17:44
- */
+/* jshint indent: 2 */
+
 module.exports = function(sequelize, DataTypes) {
   return sequelize.define('post', {
+    like_uids: {
+      type: DataTypes.STRING(40),
+      allowNull: true
+    },
+    like_peaples: {
+      type: DataTypes.STRING(100),
+      allowNull: true
+    },
+    avatar: {
+      type: DataTypes.STRING(200),
+      allowNull: true
+    },
     id: {
       type: DataTypes.INTEGER(10),
       allowNull: false,
@@ -23,10 +30,6 @@ module.exports = function(sequelize, DataTypes) {
     },
     content_text: {
       type: DataTypes.STRING(200),
-      allowNull: true
-    },
-    images: {
-      type: DataTypes.STRING(300),
       allowNull: true
     },
     username: {

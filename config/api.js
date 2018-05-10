@@ -3,7 +3,7 @@
  * @Author: 冯光平 
  * @Date: 2018-04-08 10:25:35 
  * @Last Modified by: 冯光平
- * @Last Modified time: 2018-05-05 23:12:50
+ * @Last Modified time: 2018-05-10 11:19:35
  */
 const DEFAULT = '/mx-backend/api/';
 // api版本号
@@ -20,8 +20,6 @@ const API = {
   GETALLUSER: '/getallusers',
   // 删除一个用户
   DELETE_USER: '/delete_user',
-  // 查询用户参加了哪些活动
-  GET_ACTIVITY_BY_USER: '/get_activity_by_user',
   // 查询用户加入了哪些车协
   GET_ASSOCIATION_BY_USER: '/get_association_by_user',
   // 查询用户发表了哪些帖子
@@ -36,8 +34,6 @@ const API = {
   CREATE_ACTIVITY: '/create_activity',
   // 删除一个活动
   DELETE_ACTIVITY: '/delete_activity',
-  // 该活动含有哪些用户
-  GET_USERS_BY_ACTIVITY: 'get_users_by_activity',
   // 创建一个车协
   CREATE_ASSOCIATION: '/create_association',
   // 查询某个车协
@@ -55,7 +51,19 @@ const API = {
   // 对所有帖子的查询(按时间顺序排列)
   GET_ALL_POSTS: '/get_all_posts',
   // 某个帖子的详细信息
-  GET_POST: '/get_post'
+  GET_POST: '/get_post',
+  // 查询用户参加了哪些活动
+  GET_ACTIVITY_BY_USER: '/get_activity_by_user',
+  // 该活动含有哪些用户
+  GET_USERS_BY_ACTIVITY: '/get_users_by_activity',
+  // 用户参加了一个活动
+  CREATE_USER_ACTIVITY: '/create_user_activity',
+  // 用户退出某个活动
+  DELETE_USER_ACTIVITY: '/delete_user_activity',
+  // 点赞
+  LIKE: '/like',
+  // 创建一条评论
+  CREATE_COMMENT: '/create_comment'
 }
 
 module.exports = API;

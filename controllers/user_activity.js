@@ -3,7 +3,7 @@
  * @Author: 冯光平 
  * @Date: 2018-05-05 10:14:10 
  * @Last Modified by: 冯光平
- * @Last Modified time: 2018-05-05 11:11:58
+ * @Last Modified time: 2018-05-06 15:00:14
  */
 const Sequelize = require('sequelize');
 const sequelize = require('../db');
@@ -19,24 +19,110 @@ module.exports = {
    */
   getActivityByUser: (req, res, next) => {
     let userId = req.query.id;
-    console.log('Gpuser:', userId);
+    // 根据用户Id查询到参加的活动Id列表
+    UserActivityModel.findAll({
+      where: { user_id: userId }
+    }).then(userActivities => {
+      var activities = [];
+      var promiseArr = [];
+      // 通过活动Id列表查询各个活动的详细信息
+      userActivities.forEach(userActivity => {
+        var activityId = userActivity.act_id;
+        promiseArr.push(
+          ActivityModel.findOne({
+            where: { id: activityId }
+          }).then((activity => {
+            activities.push(activity);
+          }))
+        )
+      });
 
-    UserModel.hasOne(UserActivityModel);
-    let include = [{
-      model: UserActivityModel
-    }]
-
-    UserModel.findAll({ include: include }).then((users) => {
-      res.sent(users);
-      console.log(users);
+      // 存在异步问题，使用Promise解决
+      Promise.all(promiseArr)
+        .then(() => {
+          res.locals.returns = {
+            code: '0000',
+            data: activities
+          }
+          next();
+        })
+    })
+  },
+  /**
+   * @description 该活动有哪些用户参加
+   */
+  getUsersByactivity: (req, res, next) => {
+    var actId = req.query.actId;
+    UserActivityModel.findAll({
+      where: { act_id: actId }
+    }).then(userActivities => {
+      var usersArr = [];
+      var activityPromiseArr = [];
+      userActivities.forEach(userActivity => {
+        var userId = userActivity.user_id;
+        activityPromiseArr.push(
+          UserModel.findOne({
+            where: { id: userId }
+          }).then(user => {
+            usersArr.push(user)
+          })
+        )
+      })
+      
+      Promise.all(activityPromiseArr)
+        .then(() => {
+          res.locals.returns = {
+            code: '0000',
+            data: usersArr
+          }
+          next();
+        })
+      
+    })
+  },
+  /**
+   * @description 用户参加了某个活动
+   */
+  createUserActivity: (req, res, next) => {
+    var userId = req.query.userId;
+        activityId = req.query.activityId;
+    UserActivityModel.create({
+      user_id: userId,
+      act_id: activityId
+    }).then(userActivity => {
+      res.locals.returns = {
+        code: '0000',
+        data: userActivity
+      }
+      next()
+    }).catch(err => {
+      next(err)
+    })
+  },
+  /**
+   * @description 用户退出了某个活动
+   */
+  deleteUserActivity: (req, res, next) => {
+    var id = req.query.id;
+    sequelize.transaction(t => {
+      UserActivityModel
+        .destroy({
+          where: {
+            au_id: id
+          }
+        }, {
+          transaction: t
+        }).then()
+    })
+    .then(() => {
+      res.locals.returns ={
+        code: '0000',
+        data: null,
+        message: '删除成功'
+      }
+      next()
+    }).catch(err => {
       next()
     })
   }
 }
-
-
-
-
-
-
-

@@ -3,10 +3,13 @@
  * @Author: 冯光平 
  * @Date: 2018-04-16 10:20:39
  * @Last Modified by: 冯光平
- * @Last Modified time: 2018-05-06 10:18:57
+ * @Last Modified time: 2018-05-08 18:18:53
  */
 const UserModel = require('../models/user');
 const sequelize = require('../db');
+const Sequelize = require('sequelize');
+const imagesModelFun = require('../models/images');
+const ImagesModel = imagesModelFun(sequelize, Sequelize);
 
 module.exports = {
   /**
@@ -47,9 +50,9 @@ module.exports = {
    */
   getUser: (req, res, next) => {
     console.log('Gp:获取单个用户');
-    let username = req.query.username;
+    let userId = req.query.userId;
     // 如果没有传用户名
-    if (!username) {
+    if (!userId) {
       res.locals.returns = {
         code: '0002',
         data: {
@@ -60,7 +63,7 @@ module.exports = {
     }
 
     UserModel
-      .findOne({where: {username: username}})
+      .findOne({where: {id: userId}})
       .then(user => {
         res.locals.returns = {
           code: '0000',

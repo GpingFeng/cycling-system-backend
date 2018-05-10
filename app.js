@@ -10,6 +10,7 @@ var activityRouter = require('./routes/activity');
 var userActivityRouter = require('./routes/user_activity');
 var associationRouter = require('./routes/association');
 var postRouter = require('./routes/post');
+var commentRouter = require('./routes/comment');
 
 const apiResPonseMiddleware = require('./middleware/api-response');
 
@@ -33,6 +34,7 @@ app.use('/activity', activityRouter);
 app.use('/useractivity', userActivityRouter);
 app.use('/association', associationRouter);
 app.use('/post', postRouter);
+app.use('/comment', commentRouter);
 
 app.use(apiResPonseMiddleware);
 
