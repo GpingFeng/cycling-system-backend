@@ -3,7 +3,7 @@
  * @Author: 冯光平 
  * @Date: 2018-05-05 10:14:10 
  * @Last Modified by: 冯光平
- * @Last Modified time: 2018-05-11 22:17:35
+ * @Last Modified time: 2018-05-12 20:22:37
  */
 const Sequelize = require('sequelize');
 const sequelize = require('../db');
@@ -95,6 +95,7 @@ module.exports = {
         act_id: activityId
       }
     }).then((item) => {
+      // 判断是否已经报名
       if (item) {
         res.locals.returns = {
           code: '0000',
@@ -118,7 +119,6 @@ module.exports = {
         })
       }
     })
-
   },
   /**
    * @description 用户退出了某个活动

@@ -3,12 +3,12 @@
  * @Author: 冯光平 
  * @Date: 2018-05-04 15:19:22 
  * @Last Modified by: 冯光平
- * @Last Modified time: 2018-05-11 21:20:33
+ * @Last Modified time: 2018-05-12 20:14:48
  */
 const Sequelize = require('sequelize');
 const sequelize = require('../db');
-const activityModelFunction = require('../models/activity');
-const activityModel = activityModelFunction(sequelize, Sequelize);
+const ActivityModelFunction = require('../models/activity');
+const ActivityModel = ActivityModelFunction(sequelize, Sequelize);
 const commentModelFun = require('../models/comment');
 const CommentModel = commentModelFun(sequelize, Sequelize);
 
@@ -21,7 +21,7 @@ module.exports = {
         contentText = req.query.contentText,
         replyTime = req.query.replyTime,
         postTime = req.query.postTime;
-    activityModel
+    ActivityModel
       .create({
         name: name,
         content_text: contentText,
@@ -52,13 +52,11 @@ module.exports = {
    * @returns
    */
   getActivity: (req, res, next) => {
-    console.log('come in');
     var activityId = req.query.id;
-    console.log('gpid:',activityId);
-    activityModel
+    ActivityModel
       .findOne({
         raw: true,
-        where: {id: activityId}
+        where: { id: activityId }
       })
       .then(activity => {
         CommentModel.findAll({
@@ -90,7 +88,7 @@ module.exports = {
    * @returns 
    */
   getAllActivity: (req, res, next) => {
-    activityModel.findAll({})
+    ActivityModel.findAll({})
       .then(activities => {
         res.locals.returns ={
           code: '0000',
@@ -108,7 +106,7 @@ module.exports = {
   deleteActivity: (req, res, next) => {
     var acticityId = req.query.id;
     sequelize.transaction(t => {
-      activityModel
+      ActivityModel
         .destroy({
           where: {
             id: acticityId

@@ -3,7 +3,7 @@
  * @Author: 冯光平 
  * @Date: 2018-05-04 15:19:22 
  * @Last Modified by: 冯光平
- * @Last Modified time: 2018-05-12 16:45:07
+ * @Last Modified time: 2018-05-12 20:16:19
  */
 const Sequelize = require('sequelize');
 const sequelize = require('../db');
@@ -24,7 +24,6 @@ module.exports = {
         fullname = req.body.fullname,
         intro = req.body.intro,
         uid = req.body.uid;
-        console.log(nickname),
         nowTime = moment(Date.now()).format('MM-DD HH:mm:ss');
     UserModel.findOne({
       raw: true,
@@ -62,9 +61,7 @@ module.exports = {
    * @returns
    */
   getAssociation: (req, res, next) => {
-    console.log('come in');
     var associationId = req.query.id;
-    console.log('gpid:',associationId);
     AssociationModel
       .findOne({
         raw: true,

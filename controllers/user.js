@@ -3,7 +3,7 @@
  * @Author: 冯光平 
  * @Date: 2018-04-16 10:20:39
  * @Last Modified by: 冯光平
- * @Last Modified time: 2018-05-12 15:16:49
+ * @Last Modified time: 2018-05-12 20:25:34
  */
 const sequelize = require('../db');
 const Sequelize = require('sequelize');
@@ -19,14 +19,12 @@ module.exports = {
    * 用户登录
    */
   login: (req, res, next) => {
-    console.log('登录1', req.body.code);
     var code = req.body.code;
     var appSeclet = 'ea51f63f620058db1638226a5ff58fb6'
     var appId = 'wx1274fd6d32743f7f';
     var url = 'https://api.weixin.qq.com/sns/jscode2session?appid='+appId+'&secret='+appSeclet+'&js_code='+code+'&grant_type=authorization_code';
     var request = require('request');
     request(url, function (err, response, body) {
-      console.log(body);
       res.locals.returns = {
         code: '0000',
         data: body
@@ -38,7 +36,6 @@ module.exports = {
    * 更新用户接口
    */
   updateUser: (req, res, next) => {
-    console.log(req.body);
     var id = req.body.id
         avatar = req.body.avatar,
         username = req.body.username;
@@ -61,7 +58,7 @@ module.exports = {
           }
           next()
         })
-      } else {
+      } else {      // 存在则更新
         UserModel.update({
           username: username,
           avatar: avatar
@@ -88,7 +85,7 @@ module.exports = {
     var name = req.query.username,
         avatar = req.query.avatar,
         association = req.query.association;
-        console.log('createUserGp');
+
     UserModel
       .create({
         username: name,
@@ -155,7 +152,6 @@ module.exports = {
    * @returns 
    */
   getAllUser: (req, res, next) => {
-    console.log('gp：查询所有用户');
     UserModel.findAll({}
     ).then(users => {
       res.locals.returns = {
@@ -230,7 +226,7 @@ module.exports = {
         id: userId
       }
     }).then((userOne) => {
-      console.log('我的：', userOne)
+      // 判断是否已经加入车协
       if (userOne.association_id) {
         res.locals.returns = {
           code: '0000',

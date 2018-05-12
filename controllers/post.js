@@ -3,7 +3,7 @@
  * @Author: 冯光平 
  * @Date: 2018-05-04 15:19:22 
  * @Last Modified by: 冯光平
- * @Last Modified time: 2018-05-11 21:07:19
+ * @Last Modified time: 2018-05-12 20:21:11
  */
 const Sequelize = require('sequelize');
 const sequelize = require('../db');
@@ -25,10 +25,8 @@ module.exports = {
    */
   createPost: (req, res, next) => {
     var contentText = req.body.content_text,
-        // username = req.query.username;
         userId = req.body.uid
         nowTime = moment(Date.now()).format('MM-DD HH:mm:ss');
-    console.log(nowTime);
 
     UserModel.findOne({
       raw: true,
@@ -58,8 +56,6 @@ module.exports = {
           next(err);
         })
     })
-
-    
   },
   /**
    * @description 根据帖子Id查询某个帖子
@@ -70,17 +66,17 @@ module.exports = {
    */
   getPost: (req, res, next) => {
     var postId = req.query.id;
-    console.log('gpid:',postId);
+
     PostModel
       .findOne({
         raw: true,
         where: {id: postId}
       })
       .then(post => {
-        console.log('post:',post)
         var promisePostArr = [];
         var postTemp = {};
         promisePostArr.push(
+          // 查询到该帖子有哪些图片
           ImagesModel.findAll({
             raw: true,
             where: {
@@ -88,21 +84,12 @@ module.exports = {
               target_type: 0
             }
           }).then((images) => {
-              // console.log(images);
-              // postTemp.like_peaples = post.like_peaples;
-              // postTemp.avatar = post.avatar;
-              // postTemp.id = post.id;
-              // postTemp.post_time = post.post_time;
-              // postTemp.reply_time = post.reply_time;
-              // postTemp.content_text = post.content_text;
-              // postTemp.username = post.username;
-              // postTemp.user_id = post.user_id;
-              // postTemp.images = images;
               post.images = images;
             })
         )
 
         promisePostArr.push(
+          // 查询到该帖子有哪些评论
           CommentModel.findAll({
             raw: true,
             where: {
@@ -110,7 +97,6 @@ module.exports = {
               topic_type: 0
             }
           }).then((comments => {
-            // postTemp.comments = comments;
             post.comments = comments;
           }))
         )
@@ -136,13 +122,11 @@ module.exports = {
    * @returns 
    */
   getAllPosts: (req, res, next) => {
-    console.log('获取所有帖子')
     // 获得所有帖子
     PostModel.findAll({
       order: [["post_time","DESC"]],
       raw: true
     }).then(posts => {
-        console.log('hahahahgp', posts);
         var postsArr = [];
         var promisePostArr = [];
         var importantActivities = [];
@@ -151,18 +135,16 @@ module.exports = {
         posts.forEach(post => {
           var postTemp = {};
           promisePostArr.push(
+            // 帖子的评论
             ImagesModel.findAll({
               where: {
                 target_id: post.id,
                 target_type: 0
               }
             }).then((images) => {
-              console.log('+++++++++++++++')
               postTemp = Object.assign({}, post, {
                 images: images
               });
-              // post.setDataValue('images', images)
-              console.log('---------------');
             })
           )
 
@@ -174,7 +156,6 @@ module.exports = {
                 topic_type: 0
               }
             }).then((comments => {
-              // post.setDataValue('comments', comments)
               postTemp.comments = comments;
               postsArr.push(postTemp);
             }))
@@ -195,7 +176,6 @@ module.exports = {
 
         Promise.all(promisePostArr)
           .then(() => {
-            // console.log('最后结果：', postsArr)
             res.locals.returns = {
               code: '0000',
               data: {
@@ -235,10 +215,10 @@ module.exports = {
       next()
     }).catch(err => {
       next(err)
-    }) 
+    })
   },
   /**
-   * @description 查询该发表了哪些帖子
+   * @description 查询该用户发表了哪些帖子
    */
   getPostsByUser: (req, res, next) => {
     var userId = req.query.userId;
@@ -263,7 +243,7 @@ module.exports = {
     var id = req.body.id,
         type = req.body.type,
         uid = req.body.uid;
-        console.log('点赞');
+
     // 0为帖子点赞，1为活动文章点赞
     if (type == 0) {
       PostModel.findOne({
@@ -297,7 +277,6 @@ module.exports = {
         }
 
         var likeUidStr = likeUidArr.join(',');
-        console.log('点赞人数：', likeUidStr)
         post.like_uids = likeUidStr;
         
         PostModel.update({
@@ -348,7 +327,6 @@ module.exports = {
         }
 
         var likeUidStr = likeUidArr.join(',');
-        console.log('点赞人数：', likeUidStr)
         activity.like_uids = likeUidStr;
         
         ActivityModel.update({

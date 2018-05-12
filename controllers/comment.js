@@ -3,7 +3,7 @@
  * @Author: 冯光平 
  * @Date: 2018-05-10 11:07:02 
  * @Last Modified by: 冯光平
- * @Last Modified time: 2018-05-11 17:16:24
+ * @Last Modified time: 2018-05-12 20:17:31
  */
 const Sequelize = require('sequelize');
 const sequelize = require('../db');
@@ -32,7 +32,7 @@ module.exports = {
         id: from_uid
       }
     }).then((user) => {
-      console.log(to_uid)
+      // 如果存在回复人
       if (to_uid) {
         username = user.username
         UserModel.findOne({
@@ -41,7 +41,6 @@ module.exports = {
             id: to_uid
           }
         }).then((user) => {
-          console.log(user)
           to_username = user.username
           CommentModel.create({
             from_uid: from_uid,
@@ -60,7 +59,7 @@ module.exports = {
             next()
           })
         })
-      } else {
+      } else {   // 没有存在回复人
         username = user.username
         CommentModel.create({
           from_uid: from_uid,
