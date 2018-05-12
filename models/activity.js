@@ -16,12 +16,12 @@ module.exports = function(sequelize, DataTypes) {
       primaryKey: true,
       autoIncrement: true
     },
-    name: {
+    username: {
       type: DataTypes.STRING(40),
       allowNull: true
     },
     content_text: {
-      type: DataTypes.STRING(200),
+      type: DataTypes.STRING(400),
       allowNull: true
     },
     reply_time: {
@@ -32,8 +32,24 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING(20),
       allowNull: true
     },
+    user_id: {
+      type: DataTypes.STRING(200),
+      allowNull: true
+    },
     avatar: {
       type: DataTypes.STRING(200),
+      allowNull: true
+    },
+    title: {
+      type: DataTypes.STRING(60),
+      allowNull: true
+    },
+    like_uids: {
+      type: DataTypes.STRING(400),
+      allowNull: true
+    },
+    like_peaples: {
+      type: DataTypes.INTEGER(40),
       allowNull: true
     }
   }, {

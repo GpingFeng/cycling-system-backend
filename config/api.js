@@ -3,7 +3,7 @@
  * @Author: 冯光平 
  * @Date: 2018-04-08 10:25:35 
  * @Last Modified by: 冯光平
- * @Last Modified time: 2018-05-10 11:19:35
+ * @Last Modified time: 2018-05-12 15:17:26
  */
 const DEFAULT = '/mx-backend/api/';
 // api版本号
@@ -12,10 +12,14 @@ const VERSION = 'v1';
 // 前缀常量
 const PREFIX = DEFAULT + VERSION;
 const API = {
+  // 用户登录接口
+  LOGIN: '/login',
+  // 更新用户接口
+  UPDATE_USER: '/update_user',
   // 创建一个新的用户
   CREATE_USER: '/create_user',
-  // 根据id查询用户
-  GETUSER: '/getuser',
+  // 根据用户查询车协
+  GET_ASSOCIATION_BY_USER: '/get_association_by_user',
   // 查询所有的用户
   GETALLUSER: '/getallusers',
   // 删除一个用户
@@ -36,6 +40,8 @@ const API = {
   DELETE_ACTIVITY: '/delete_activity',
   // 创建一个车协
   CREATE_ASSOCIATION: '/create_association',
+  // 用户加入一个车协
+  JOIN_ASSOCIATION: '/join_association',
   // 查询某个车协
   GET_ASSOCIATION_BY_ID: '/get_association_by_id',
   // 查询所有车协
@@ -63,7 +69,9 @@ const API = {
   // 点赞
   LIKE: '/like',
   // 创建一条评论
-  CREATE_COMMENT: '/create_comment'
+  CREATE_COMMENT: '/create_comment',
+  // 上传一张图片
+  CREATE_IMAGE: '/create_image'
 }
 
 module.exports = API;

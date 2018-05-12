@@ -3,12 +3,14 @@
  * @Author: 冯光平 
  * @Date: 2018-05-04 15:19:22 
  * @Last Modified by: 冯光平
- * @Last Modified time: 2018-05-04 21:21:03
+ * @Last Modified time: 2018-05-11 21:20:33
  */
 const Sequelize = require('sequelize');
 const sequelize = require('../db');
 const activityModelFunction = require('../models/activity');
 const activityModel = activityModelFunction(sequelize, Sequelize);
+const commentModelFun = require('../models/comment');
+const CommentModel = commentModelFun(sequelize, Sequelize);
 
 module.exports = {
   /**
@@ -54,13 +56,27 @@ module.exports = {
     var activityId = req.query.id;
     console.log('gpid:',activityId);
     activityModel
-      .findOne({where: {id: activityId}})
+      .findOne({
+        raw: true,
+        where: {id: activityId}
+      })
       .then(activity => {
-        res.locals.returns = {
-          code: '0000',
-          data: activity
-        }
-        next();
+        CommentModel.findAll({
+          raw: true,
+          where: {
+            topic_id: activity.id,
+            topic_type: 1
+          }
+        }).then((comments => {
+          // postTemp.comments = comments;
+          activity.comments = comments;
+          res.locals.returns = {
+            code: '0000',
+            data: activity
+          }
+          next();
+        }))
+        
       })
       .catch(err => {
         next(err);

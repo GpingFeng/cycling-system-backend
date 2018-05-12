@@ -1,10 +1,5 @@
-/*
- * @description: 用户活动映射表 
- * @Author: 冯光平 
- * @Date: 2018-05-05 23:26:16 
- * @Last Modified by:   冯光平 
- * @Last Modified time: 2018-05-05 23:26:16 
- */
+/* jshint indent: 2 */
+
 module.exports = function(sequelize, DataTypes) {
   return sequelize.define('user_activity', {
     act_id: {
@@ -22,7 +17,7 @@ module.exports = function(sequelize, DataTypes) {
       autoIncrement: true
     },
     user_id: {
-      type: DataTypes.INTEGER(10),
+      type: DataTypes.STRING(200),
       allowNull: true,
       references: {
         model: 'user',

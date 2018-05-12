@@ -3,24 +3,26 @@
  * @Author: 冯光平 
  * @Date: 2018-05-10 11:07:02 
  * @Last Modified by: 冯光平
- * @Last Modified time: 2018-05-10 20:14:06
+ * @Last Modified time: 2018-05-11 17:16:24
  */
 const Sequelize = require('sequelize');
 const sequelize = require('../db');
 const commentModelFun = require('../models/comment');
 const CommentModel = commentModelFun(sequelize, Sequelize);
-const UserModel = require('../models/user');
+const UserModelFun = require('../models/user');
+const UserModel = UserModelFun(sequelize, Sequelize);
 
 module.exports = {
   /**
-   * 创建一条新的帖子
+   * 创建一条新的评论
    */
   createComment: function (req, res, next) {
-    var from_uid = req.query.from_uid;
-    var content = req.query.content;
-    var topic_type = req.query.topic_type;
-    var topic_id = req.query.topic_id;
-    var to_uid = req.query.to_uid;
+    var from_uid = req.body.from_uid;
+    var content = req.body.content;
+    var topic_type = req.body.topic_type;
+    var topic_id = req.body.topic_id;
+    var to_uid = req.body.to_uid;
+
     var username
     var to_username
     // 查询用户

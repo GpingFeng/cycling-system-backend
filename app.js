@@ -11,6 +11,7 @@ var userActivityRouter = require('./routes/user_activity');
 var associationRouter = require('./routes/association');
 var postRouter = require('./routes/post');
 var commentRouter = require('./routes/comment');
+var imagesRouter = require('./routes/images');
 
 const apiResPonseMiddleware = require('./middleware/api-response');
 
@@ -35,6 +36,7 @@ app.use('/useractivity', userActivityRouter);
 app.use('/association', associationRouter);
 app.use('/post', postRouter);
 app.use('/comment', commentRouter);
+app.use('/images', imagesRouter);
 
 app.use(apiResPonseMiddleware);
 

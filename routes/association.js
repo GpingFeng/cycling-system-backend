@@ -3,7 +3,7 @@
  * @Author: 冯光平 
  * @Date: 2018-05-05 23:27:42 
  * @Last Modified by: 冯光平
- * @Last Modified time: 2018-05-06 09:15:52
+ * @Last Modified time: 2018-05-12 16:35:09
  */
 var express = require('express');
 var router = express.Router();
@@ -16,7 +16,7 @@ router.get('/', function(req, res, next) {
 router.get(API.GET_ASSOCIATION_BY_ID, AssociationController.getAssociation);
 router.get(API.GET_ALL_ASSOCIATION, AssociationController.getAllAssociation);
 // router.get(API.GET_USERS_BY_ASSOCIATION, AssociationController.getUsersByAssociation);
-router.get(API.CREATE_ASSOCIATION, AssociationController.createAssociation);
+router.put(API.CREATE_ASSOCIATION, AssociationController.createAssociation);
 router.get(API.DELETE_ASSOCIATION, AssociationController.deleteAssociation);
 
 module.exports = router;

@@ -3,34 +3,48 @@
  * @Author: 冯光平 
  * @Date: 2018-05-04 15:19:22 
  * @Last Modified by: 冯光平
- * @Last Modified time: 2018-05-06 09:07:54
+ * @Last Modified time: 2018-05-12 16:45:07
  */
 const Sequelize = require('sequelize');
 const sequelize = require('../db');
-const associationModelFunction = require('../models/association');
-const associationModel = associationModelFunction(sequelize, Sequelize);
+const AssociationModelFunction = require('../models/association');
+const AssociationModel = AssociationModelFunction(sequelize, Sequelize);
+const imagesModelFun = require('../models/images');
+const ImagesModel = imagesModelFun(sequelize, Sequelize);
+const UserModelFun = require('../models/user');
+const UserModel = UserModelFun(sequelize, Sequelize);
+const moment = require('moment');
 
 module.exports = {
   /**
    * @description 增加一个车协
    */
   createAssociation: (req, res, next) => {
-    var nickname = req.query.nickname,
-        fullname = req.query.fullname,
-        intro = req.query.intro;
-    associationModel
+    var nickname = req.body.nickname,
+        fullname = req.body.fullname,
+        intro = req.body.intro,
+        uid = req.body.uid;
+        console.log(nickname),
+        nowTime = moment(Date.now()).format('MM-DD HH:mm:ss');
+    UserModel.findOne({
+      raw: true,
+      where: {
+        id: uid
+      }
+    }).then(user => {
+      AssociationModel
       .create({
         nickname: nickname,
         fullname: fullname,
-        intro: intro
+        intro: intro,
+        username: user.username,
+        user_id: user.id,
+        avatar: user.avatar,
+        post_time: nowTime
       }).then(association => {
         res.locals.returns = {
           code: '0000',
-          data: {
-            nickname: association.nickname,
-            fullname: association.fullname,
-            intro: association.intro
-          },
+          data: association,
           message: '新增成功'
         }
         next();
@@ -38,6 +52,7 @@ module.exports = {
       .catch(err => {
         next(err);
       })
+    })
   },
   /**
    * @description 根据车协Id查询某个车协
@@ -50,14 +65,32 @@ module.exports = {
     console.log('come in');
     var associationId = req.query.id;
     console.log('gpid:',associationId);
-    associationModel
-      .findOne({where: {id: associationId}})
+    AssociationModel
+      .findOne({
+        raw: true,
+        where: {id: associationId}
+      })
       .then(association => {
-        res.locals.returns = {
-          code: '0000',
-          data: association
-        }
-        next();
+        ImagesModel.findAll({
+          raw: true,
+          where: {
+            target_id: associationId,
+            target_type: 1
+          }
+        }).then((images) => {
+          association.images = images;
+          UserModel.findAll({
+            raw: true,
+            association_id: associationId
+          }).then((users) => {
+            association.users = users;
+            res.locals.returns = {
+              code: '0000',
+              data: association
+            }
+            next();
+          })
+        })
       })
       .catch(err => {
         next(err);
@@ -71,13 +104,36 @@ module.exports = {
    * @returns 
    */
   getAllAssociation: (req, res, next) => {
-    associationModel.findAll({})
+    AssociationModel.findAll({
+      raw: true
+    })
       .then(associations => {
-        res.locals.returns ={
-          code: '0000',
-          data: associations
-        }
-        next();
+        var promiseAssociationArr = [];
+        var associationsArr = [];
+          associations.forEach(association => {
+            promiseAssociationArr.push(
+              ImagesModel.findAll({
+                raw: true,
+                where: {
+                  target_id: association.id,
+                  target_type: 1
+                }
+              }).then((images) => {
+                association.images = images;
+                associationsArr.push(association);
+              })
+            )
+          })
+        
+
+        Promise.all(promiseAssociationArr)
+          .then(() => {
+            res.locals.returns ={
+              code: '0000',
+              data: associationsArr
+            }
+            next();
+          })
       })
       .catch(err => {
         next(err);
@@ -89,7 +145,7 @@ module.exports = {
   deleteAssociation: (req, res, next) => {
     var associationId = req.query.id;
     sequelize.transaction(t => {
-      associationModel
+      AssociationModel
         .destroy({
           where: {
             id: associationId

@@ -3,11 +3,12 @@
  * @Author: 冯光平 
  * @Date: 2018-05-05 10:14:10 
  * @Last Modified by: 冯光平
- * @Last Modified time: 2018-05-06 15:00:14
+ * @Last Modified time: 2018-05-11 22:17:35
  */
 const Sequelize = require('sequelize');
 const sequelize = require('../db');
-const UserModel = require('../models/user');
+const UserModelFun = require('../models/user');
+const UserModel = UserModelFun(sequelize, Sequelize);
 const activityModelFunction = require('../models/activity');
 const userActivityFunction =require('../models/user_activity');
 const ActivityModel = activityModelFunction(sequelize, Sequelize);
@@ -86,18 +87,38 @@ module.exports = {
   createUserActivity: (req, res, next) => {
     var userId = req.query.userId;
         activityId = req.query.activityId;
-    UserActivityModel.create({
-      user_id: userId,
-      act_id: activityId
-    }).then(userActivity => {
-      res.locals.returns = {
-        code: '0000',
-        data: userActivity
+    
+    UserActivityModel.findOne({
+      raw: true,
+      where: {
+        user_id: userId,
+        act_id: activityId
       }
-      next()
-    }).catch(err => {
-      next(err)
+    }).then((item) => {
+      if (item) {
+        res.locals.returns = {
+          code: '0000',
+          data: null,
+          message: "您已报名了哦  ~"
+        }
+        next()
+      } else {
+        UserActivityModel.create({
+          user_id: userId,
+          act_id: activityId
+        }).then(userActivity => {
+          res.locals.returns = {
+            code: '0000',
+            data: userActivity,
+            message: "成功参加"
+          }
+          next()
+        }).catch(err => {
+          next(err)
+        })
+      }
     })
+
   },
   /**
    * @description 用户退出了某个活动

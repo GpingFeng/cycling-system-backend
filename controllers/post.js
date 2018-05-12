@@ -3,7 +3,7 @@
  * @Author: 冯光平 
  * @Date: 2018-05-04 15:19:22 
  * @Last Modified by: 冯光平
- * @Last Modified time: 2018-05-10 09:59:41
+ * @Last Modified time: 2018-05-11 21:07:19
  */
 const Sequelize = require('sequelize');
 const sequelize = require('../db');
@@ -15,34 +15,51 @@ const activityModelFun = require('../models/activity');
 const ActivityModel = activityModelFun(sequelize, Sequelize);
 const commentModelFun = require('../models/comment');
 const CommentModel = commentModelFun(sequelize, Sequelize);
-const UserModel = require('../models/user')
+const UserModelFun = require('../models/user');
+const UserModel = UserModelFun(sequelize, Sequelize);
+const moment = require('moment');
 
 module.exports = {
   /**
    * @description 增加一个帖子
    */
   createPost: (req, res, next) => {
-    var contentText = req.query.contentText,
-        images = req.query.images,
-        username = req.query.username;
-        userId = req.query.userId;
-    PostModel
-      .create({
-        content_text: contentText,
-        images: images,
-        username: username,
-        user_id: userId
-      }).then(post => {
-        res.locals.returns = {
-          code: '0000',
-          data: post,
-          message: '新增成功'
-        }
-        next();
-      })
-      .catch(err => {
-        next(err);
-      })
+    var contentText = req.body.content_text,
+        // username = req.query.username;
+        userId = req.body.uid
+        nowTime = moment(Date.now()).format('MM-DD HH:mm:ss');
+    console.log(nowTime);
+
+    UserModel.findOne({
+      raw: true,
+      where: {
+        id: userId
+      }
+    }).then((user) => {
+      var avatar = user.avatar;
+      var username = user.username;
+      PostModel
+        .create({
+          content_text: contentText,
+          username: username,
+          user_id: userId,
+          avatar: avatar,
+          post_time: nowTime,
+          like_peaples: 0
+        }).then(post => {
+          res.locals.returns = {
+            code: '0000',
+            data: post,
+            message: '新增成功'
+          }
+          next();
+        })
+        .catch(err => {
+          next(err);
+        })
+    })
+
+    
   },
   /**
    * @description 根据帖子Id查询某个帖子
@@ -121,8 +138,10 @@ module.exports = {
   getAllPosts: (req, res, next) => {
     console.log('获取所有帖子')
     // 获得所有帖子
-    PostModel.findAll({raw: true})
-      .then(posts => {
+    PostModel.findAll({
+      order: [["post_time","DESC"]],
+      raw: true
+    }).then(posts => {
         console.log('hahahahgp', posts);
         var postsArr = [];
         var promisePostArr = [];
@@ -241,9 +260,9 @@ module.exports = {
    * @description 点赞接口
    */
   like: (req, res, next) => {
-    var id = req.query.id,
-        type = req.query.type,
-        uid = req.query.uid;
+    var id = req.body.id,
+        type = req.body.type,
+        uid = req.body.uid;
         console.log('点赞');
     // 0为帖子点赞，1为活动文章点赞
     if (type == 0) {
@@ -292,6 +311,57 @@ module.exports = {
           res.locals.returns = {
             code: '0000',
             data: post
+          }
+          next();
+        })
+      })
+    } else {
+      // 为活动点赞
+      ActivityModel.findOne({
+        raw: true,
+        where: {
+          id: id
+        }
+      }).then((activity) => {
+        var isLike = true;
+        var likeUidArr = [];
+        if (activity.like_uids) {
+          likeUidArr = activity.like_uids.split(',');
+        }
+        
+        var deleteTargetIndex
+        likeUidArr.forEach((id, index) => {
+          // 已点赞过的
+          if (id == uid) {
+            isLike = false
+            deleteTargetIndex = index
+          }
+        })
+        if (isLike) {
+          // 自增一
+          activity.like_peaples++;
+          likeUidArr.push(uid);
+        } else {
+          // 自减
+          activity.like_peaples--;
+          likeUidArr.splice(deleteTargetIndex, 1);
+        }
+
+        var likeUidStr = likeUidArr.join(',');
+        console.log('点赞人数：', likeUidStr)
+        activity.like_uids = likeUidStr;
+        
+        ActivityModel.update({
+          like_peaples: activity.like_peaples,
+          like_uids: likeUidStr
+        }, {
+          where: {
+            id: id
+          }
+        }).then((lastPost) => {
+          res.locals.returns = {
+            code: '0000',
+            data: activity
           }
           next();
         })

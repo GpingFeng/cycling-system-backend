@@ -1,12 +1,11 @@
-/*
- * @description: 车协表映射 
- * @Author: 冯光平 
- * @Date: 2018-05-05 23:24:55 
- * @Last Modified by: 冯光平
- * @Last Modified time: 2018-05-06 09:17:12
- */
+/* jshint indent: 2 */
+
 module.exports = function(sequelize, DataTypes) {
   return sequelize.define('association', {
+    username: {
+      type: DataTypes.STRING(50),
+      allowNull: true
+    },
     id: {
       type: DataTypes.INTEGER(10),
       allowNull: false,
@@ -23,6 +22,18 @@ module.exports = function(sequelize, DataTypes) {
     },
     intro: {
       type: DataTypes.STRING(1000),
+      allowNull: true
+    },
+    user_id: {
+      type: DataTypes.STRING(200),
+      allowNull: true
+    },
+    avatar: {
+      type: DataTypes.STRING(200),
+      allowNull: true
+    },
+    post_time: {
+      type: DataTypes.STRING(20),
       allowNull: true
     }
   }, {

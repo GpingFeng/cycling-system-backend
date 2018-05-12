@@ -3,15 +3,84 @@
  * @Author: 冯光平 
  * @Date: 2018-04-16 10:20:39
  * @Last Modified by: 冯光平
- * @Last Modified time: 2018-05-08 18:18:53
+ * @Last Modified time: 2018-05-12 15:16:49
  */
-const UserModel = require('../models/user');
 const sequelize = require('../db');
 const Sequelize = require('sequelize');
 const imagesModelFun = require('../models/images');
 const ImagesModel = imagesModelFun(sequelize, Sequelize);
+const UserModelFun = require('../models/user');
+const UserModel = UserModelFun(sequelize, Sequelize);
+const AssociationModelFunction = require('../models/association');
+const AssociationModel = AssociationModelFunction(sequelize, Sequelize);
 
 module.exports = {
+  /**
+   * 用户登录
+   */
+  login: (req, res, next) => {
+    console.log('登录1', req.body.code);
+    var code = req.body.code;
+    var appSeclet = 'ea51f63f620058db1638226a5ff58fb6'
+    var appId = 'wx1274fd6d32743f7f';
+    var url = 'https://api.weixin.qq.com/sns/jscode2session?appid='+appId+'&secret='+appSeclet+'&js_code='+code+'&grant_type=authorization_code';
+    var request = require('request');
+    request(url, function (err, response, body) {
+      console.log(body);
+      res.locals.returns = {
+        code: '0000',
+        data: body
+      }
+      next()
+    })
+  },
+  /**
+   * 更新用户接口
+   */
+  updateUser: (req, res, next) => {
+    console.log(req.body);
+    var id = req.body.id
+        avatar = req.body.avatar,
+        username = req.body.username;
+    UserModel.find({
+      where: {
+        id: id
+      }
+    }).then(users => {
+      // 如果不存在用户，则新增
+      if (!users) {
+        UserModel.create({
+          id: id,
+          username: username,
+          avatar: avatar
+        }).then((user) => {
+          res.locals.returns = {
+            code: '0000',
+            data: user,
+            message: '新增成功'
+          }
+          next()
+        })
+      } else {
+        UserModel.update({
+          username: username,
+          avatar: avatar
+        }, {
+          where: {
+            id: id
+          }
+        }).then((user) => {
+          res.locals.returns = {
+            code: '0000',
+            data: user,
+            message: '更新成功'
+          }
+          next()
+        })
+      }
+    })
+
+  },
   /**
    * @description 增加一个新的用户
    */
@@ -41,15 +110,14 @@ module.exports = {
       })
   },
   /**
-   * 获取单个用户，查询该用户加入了那个车协
+   * 获取该用户加入了哪个车协
    *
    * @param {Object} req
    * @param {Object} res
    * @param {Function} next
    * @returns
    */
-  getUser: (req, res, next) => {
-    console.log('Gp:获取单个用户');
+  getAssociationByUser: (req, res, next) => {
     let userId = req.query.userId;
     // 如果没有传用户名
     if (!userId) {
@@ -63,11 +131,15 @@ module.exports = {
     }
 
     UserModel
-      .findOne({where: {id: userId}})
+      .findOne({
+        raw: true,
+        where: {id: userId}
+      })
       .then(user => {
+        var associationId = user.association_id;
         res.locals.returns = {
           code: '0000',
-          data: user
+          data: associationId
         }
         next();
       })
@@ -143,5 +215,54 @@ module.exports = {
       }
       next()
     })
+  },
+  /**
+   * 用户加入某个车协
+   */
+  joinAssociation: (req, res, next) => {
+    var associationId = req.body.associationId,
+        userId = req.body.userId;
+    
+    // 如果已经加入了一个车协，则不能再加
+    UserModel.findOne({
+      raw: true,
+      where: {
+        id: userId
+      }
+    }).then((userOne) => {
+      console.log('我的：', userOne)
+      if (userOne.association_id) {
+        res.locals.returns = {
+          code: '0000',
+          data: null,
+          message: '已有加入车协'
+        }
+        next()
+      } else {
+        AssociationModel.findOne({
+          raw: true,
+          where: {
+            id: associationId
+          }
+        }).then((association) => {
+          UserModel.update({
+            association: association.nickname,
+            association_id: associationId
+          }, {
+            where: {
+              id: userId
+            }
+          }).then((user) => {
+            res.locals.returns = {
+              code: '0000',
+              data: user,
+              message: '加入成功'
+            }
+            next()
+          })
+        })
+      }
+    })
+
   }
 };
