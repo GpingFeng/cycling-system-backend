@@ -8,7 +8,7 @@ module.exports = function(sequelize, DataTypes) {
     },
     image: {
       type: DataTypes.STRING(200),
-      allowNull: true
+      allowNull: false
     },
     id: {
       type: DataTypes.INTEGER(10),
@@ -18,11 +18,11 @@ module.exports = function(sequelize, DataTypes) {
     },
     username: {
       type: DataTypes.STRING(40),
-      allowNull: true
+      allowNull: false
     },
     content_text: {
-      type: DataTypes.STRING(400),
-      allowNull: true
+      type: DataTypes.STRING(1000),
+      allowNull: false
     },
     reply_time: {
       type: DataTypes.STRING(20),
@@ -30,26 +30,26 @@ module.exports = function(sequelize, DataTypes) {
     },
     post_time: {
       type: DataTypes.STRING(20),
-      allowNull: true
+      allowNull: false
     },
     user_id: {
       type: DataTypes.STRING(200),
-      allowNull: true
+      allowNull: false
     },
     avatar: {
       type: DataTypes.STRING(200),
-      allowNull: true
+      allowNull: false
     },
     title: {
       type: DataTypes.STRING(60),
-      allowNull: true
+      allowNull: false
     },
     like_uids: {
-      type: DataTypes.STRING(400),
+      type: DataTypes.STRING(100),
       allowNull: true
     },
     like_peaples: {
-      type: DataTypes.INTEGER(40),
+      type: DataTypes.INTEGER(100),
       allowNull: true
     }
   }, {

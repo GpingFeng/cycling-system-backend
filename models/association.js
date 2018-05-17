@@ -3,7 +3,7 @@
 module.exports = function(sequelize, DataTypes) {
   return sequelize.define('association', {
     username: {
-      type: DataTypes.STRING(50),
+      type: DataTypes.STRING(40),
       allowNull: true
     },
     id: {
@@ -33,7 +33,7 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: true
     },
     post_time: {
-      type: DataTypes.STRING(20),
+      type: DataTypes.STRING(100),
       allowNull: true
     }
   }, {

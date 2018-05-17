@@ -3,7 +3,7 @@
  * @Author: 冯光平 
  * @Date: 2018-05-04 15:19:22 
  * @Last Modified by: 冯光平
- * @Last Modified time: 2018-05-12 20:21:11
+ * @Last Modified time: 2018-05-17 08:56:46
  */
 const Sequelize = require('sequelize');
 const sequelize = require('../db');
@@ -127,6 +127,7 @@ module.exports = {
       order: [["post_time","DESC"]],
       raw: true
     }).then(posts => {
+        console.log('所有帖子')
         var postsArr = [];
         var promisePostArr = [];
         var importantActivities = [];
@@ -156,6 +157,7 @@ module.exports = {
                 topic_type: 0
               }
             }).then((comments => {
+              console.log('评论');
               postTemp.comments = comments;
               postsArr.push(postTemp);
             }))

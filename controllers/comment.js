@@ -3,7 +3,7 @@
  * @Author: 冯光平 
  * @Date: 2018-05-10 11:07:02 
  * @Last Modified by: 冯光平
- * @Last Modified time: 2018-05-12 20:17:31
+ * @Last Modified time: 2018-05-16 13:00:58
  */
 const Sequelize = require('sequelize');
 const sequelize = require('../db');
@@ -79,6 +79,31 @@ module.exports = {
         })
       }
       
+    })
+  },
+  /**
+   * 删除一条评论
+   */
+  deleteComment: function () {
+    var commentId = req.query.id;
+    console.log('删除评论')
+    sequelize.transaction(t => {
+      CommentModel
+        .destroy({ 
+          where: {
+            id: commentId
+          }
+        }, {
+          transaction: t
+        }).then()
+    })
+    .then(() => {
+      res.locals.returns = {
+        code: '0000',
+        data: null,
+        message: '删除成功'
+      }
+      next()
     })
   }
 }

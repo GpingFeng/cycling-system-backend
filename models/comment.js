@@ -9,16 +9,16 @@ module.exports = function(sequelize, DataTypes) {
       autoIncrement: true
     },
     from_uid: {
-      type: DataTypes.INTEGER(10),
+      type: DataTypes.STRING(200),
       allowNull: false
     },
     username: {
-      type: DataTypes.CHAR(50),
+      type: DataTypes.STRING(40),
       allowNull: false
     },
     content: {
-      type: DataTypes.CHAR(200),
-      allowNull: true
+      type: DataTypes.STRING(1000),
+      allowNull: false
     },
     topic_id: {
       type: DataTypes.INTEGER(10),
@@ -29,11 +29,11 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false
     },
     to_uid: {
-      type: DataTypes.INTEGER(10),
+      type: DataTypes.STRING(200),
       allowNull: true
     },
     to_username: {
-      type: DataTypes.STRING(50),
+      type: DataTypes.STRING(40),
       allowNull: true
     }
   }, {

@@ -12,15 +12,27 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false
     },
     username: {
-      type: DataTypes.CHAR(40),
+      type: DataTypes.STRING(40),
       allowNull: false
     },
     association: {
-      type: DataTypes.CHAR(40),
+      type: DataTypes.STRING(40),
       allowNull: true
     },
     association_id: {
       type: DataTypes.INTEGER(10),
+      allowNull: true
+    },
+    realname: {
+      type: DataTypes.STRING(40),
+      allowNull: true
+    },
+    mail: {
+      type: DataTypes.STRING(50),
+      allowNull: true
+    },
+    phone: {
+      type: DataTypes.STRING(20),
       allowNull: true
     }
   }, {

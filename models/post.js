@@ -3,7 +3,7 @@
 module.exports = function(sequelize, DataTypes) {
   return sequelize.define('post', {
     like_uids: {
-      type: DataTypes.STRING(40),
+      type: DataTypes.STRING(100),
       allowNull: true
     },
     like_peaples: {
@@ -12,7 +12,7 @@ module.exports = function(sequelize, DataTypes) {
     },
     avatar: {
       type: DataTypes.STRING(200),
-      allowNull: true
+      allowNull: false
     },
     id: {
       type: DataTypes.INTEGER(10),
@@ -21,23 +21,23 @@ module.exports = function(sequelize, DataTypes) {
       autoIncrement: true
     },
     post_time: {
-      type: DataTypes.STRING(20),
-      allowNull: true
+      type: DataTypes.STRING(100),
+      allowNull: false
     },
     reply_time: {
       type: DataTypes.STRING(20),
       allowNull: true
     },
     content_text: {
-      type: DataTypes.STRING(200),
+      type: DataTypes.STRING(1000),
       allowNull: true
     },
     username: {
-      type: DataTypes.STRING(30),
-      allowNull: true
+      type: DataTypes.STRING(40),
+      allowNull: false
     },
     user_id: {
-      type: DataTypes.INTEGER(10),
+      type: DataTypes.STRING(200),
       allowNull: false
     }
   }, {

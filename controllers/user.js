@@ -3,7 +3,7 @@
  * @Author: 冯光平 
  * @Date: 2018-04-16 10:20:39
  * @Last Modified by: 冯光平
- * @Last Modified time: 2018-05-12 20:25:34
+ * @Last Modified time: 2018-05-16 15:19:51
  */
 const sequelize = require('../db');
 const Sequelize = require('sequelize');
@@ -217,8 +217,11 @@ module.exports = {
    */
   joinAssociation: (req, res, next) => {
     var associationId = req.body.associationId,
-        userId = req.body.userId;
-    
+        userId = req.body.userId,
+        realname = req.body.realname,
+        mail = req.body.mail,
+        phone = req.body.phone;
+
     // 如果已经加入了一个车协，则不能再加
     UserModel.findOne({
       raw: true,
@@ -243,7 +246,10 @@ module.exports = {
         }).then((association) => {
           UserModel.update({
             association: association.nickname,
-            association_id: associationId
+            association_id: associationId,
+            phone: phone,
+            mail: mail,
+            realname: realname
           }, {
             where: {
               id: userId

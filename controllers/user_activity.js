@@ -3,7 +3,7 @@
  * @Author: 冯光平 
  * @Date: 2018-05-05 10:14:10 
  * @Last Modified by: 冯光平
- * @Last Modified time: 2018-05-12 20:22:37
+ * @Last Modified time: 2018-05-16 16:23:25
  */
 const Sequelize = require('sequelize');
 const sequelize = require('../db');
@@ -85,9 +85,12 @@ module.exports = {
    * @description 用户参加了某个活动
    */
   createUserActivity: (req, res, next) => {
-    var userId = req.query.userId;
-        activityId = req.query.activityId;
-    
+    var userId = req.query.userId,
+        activityId = req.query.activityId,
+        realname = req.query.realname,
+        mail = req.query.mail,
+        phone = req.query.phone;
+
     UserActivityModel.findOne({
       raw: true,
       where: {
@@ -106,7 +109,10 @@ module.exports = {
       } else {
         UserActivityModel.create({
           user_id: userId,
-          act_id: activityId
+          act_id: activityId,
+          realname: realname,
+          phone: phone,
+          mail: mail
         }).then(userActivity => {
           res.locals.returns = {
             code: '0000',

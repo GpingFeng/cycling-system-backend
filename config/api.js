@@ -3,7 +3,7 @@
  * @Author: 冯光平 
  * @Date: 2018-04-08 10:25:35 
  * @Last Modified by: 冯光平
- * @Last Modified time: 2018-05-12 15:17:26
+ * @Last Modified time: 2018-05-16 11:00:34
  */
 const DEFAULT = '/mx-backend/api/';
 // api版本号
@@ -18,8 +18,6 @@ const API = {
   UPDATE_USER: '/update_user',
   // 创建一个新的用户
   CREATE_USER: '/create_user',
-  // 根据用户查询车协
-  GET_ASSOCIATION_BY_USER: '/get_association_by_user',
   // 查询所有的用户
   GETALLUSER: '/getallusers',
   // 删除一个用户
@@ -70,6 +68,8 @@ const API = {
   LIKE: '/like',
   // 创建一条评论
   CREATE_COMMENT: '/create_comment',
+  // 删除一条评论
+  DELETE_COMMENT: '/delete_comment',
   // 上传一张图片
   CREATE_IMAGE: '/create_image'
 }
