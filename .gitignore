@@ -5,3 +5,4 @@ config/jwt.js
 npm-debug.log
 yarn-error.log
 data/
+upload/
